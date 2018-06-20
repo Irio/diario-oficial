@@ -1,8 +1,11 @@
 import os
 import subprocess
+from uuid import uuid4
 
 from database.models import Gazette, initialize_database
 from scrapy.exceptions import DropItem
+from scrapy.pipelines.files import FilesPipeline
+from scrapy.http import FormRequest
 from sqlalchemy.orm import sessionmaker
 
 
@@ -16,7 +19,8 @@ class PdfParsingPipeline:
         for key, value in item['files'][0].items():
             item[f'file_{key}'] = value
         item.pop('files')
-        item.pop('file_urls')
+        if 'file_urls' in item:
+            item.pop('file_urls')
         return item
 
     def pdf_source_text(self, item):
@@ -65,3 +69,43 @@ class GazetteDateFilteringPipeline(object):
                 raise DropItem(
                     'Droping all items before {}'.format(spider.start_date))
         return item
+
+
+class SessionAwareFilesPipeline(FilesPipeline):
+    """This item pipeline adds new behavior to the default
+    FilesPipeline provided by Scrapy.
+
+    In some cases we need to pass form data and use
+    a specific session (cookiejar) to be able to
+    download a gazette file. This often happens with
+    component-based server-side libraries like Java
+    Server Faces. This custom item pipeline provides a
+    way to customize a download request.
+
+    Note that a UUID is generated and used as file_path
+    because we can't rely anymore on the request URL to
+    determine the file name (because they will be equal).
+    Also note that this file_path override only applies to
+    the customized requests.
+
+    Example usage: gazette.spiders.sp_ribeirao_preto.SpRibeiraoPretoSpider
+    """
+
+    def get_media_requests(self, item, info):
+        requests = super().get_media_requests(item, info)
+        if 'file_requests' in item:
+            for request in item['file_requests']:
+                file_path_override = str(uuid4())
+                requests.append(FormRequest(request['url'],
+                                            formdata=request['formdata'],
+                                            meta={'cookiejar': request['cookiejar'],
+                                                  'file_path_override': file_path_override}))
+            item.pop('file_requests')
+        return requests
+
+    def file_path(self, request, response=None, info=None):
+        return (
+            f'full/{request.meta["file_path_override"]}'
+            if 'file_path_override' in request.meta
+            else super().file_path(request, response, info)
+        )

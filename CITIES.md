@@ -36,7 +36,7 @@ The municipality id (IBGE code) can be found on [Wikipedia](https://pt.wikipedia
 | 26 | São José dos Campos | :soon: | | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/71) |
 | 27 | Osasco | :soon: | | | |
 | 28 | Jaboatão dos Guararapes | | | | |
-| 29 | Ribeirão Preto | | | [issue](https://github.com/okfn-brasil/diario-oficial/issues/31) | |
+| 29 | Ribeirão Preto | :white_check_mark: | | [issue](https://github.com/okfn-brasil/diario-oficial/issues/31) | [PR](https://github.com/okfn-brasil/diario-oficial/pull/67) |
 | 30 | Uberlândia | :soon: | | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/37) |
 | 31 | Sorocaba | | | | |
 | 32 | Contagem | :soon: | | | |

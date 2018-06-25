@@ -3,6 +3,7 @@ services:
   api:
     depends_on:
       - postgres
+      - splash
     env_file:
       - .env
     environment:
@@ -24,8 +25,12 @@ services:
       - postgres
       - rabbitmq
       - redis
+      - splash
     env_file:
       - .env
+    environment:
+      - SCRAPY_SETTINGS_MODULE=gazette.settings
+      - PYTHONPATH=/mnt/code/data_collection
     volumes:
       - data_files:/mnt/data
       - ${PROCESSING_FOLDER}:/mnt/code
@@ -51,5 +56,10 @@ services:
       - ./web:/mnt/code
       - /mnt/code/node_modules
 
+  splash:
+    image: scrapinghub/splash:3.2
+    ports:
+      - 5023:5023
+      - 8050:8050
 volumes:
   data_files:

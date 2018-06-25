@@ -9,3 +9,4 @@ redis==2.10.6
 requests==2.18.4
 scrapy==1.5.0
 SQLAlchemy==1.2.5
+scrapy-splash==0.7.2

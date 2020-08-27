@@ -82,7 +82,9 @@ class ExtractTextPipeline:
         If the file type is pdf returns True. Otherwise,
         returns False
         """
-        return self._is_file_type(filepath, file_types=["application/pdf"])
+        return self._is_file_type(
+            filepath, file_types=["application/pdf", "application/octet-stream"]
+        )
 
     def is_doc(self, filepath):
         """

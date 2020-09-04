@@ -83,7 +83,7 @@ class ExtractTextPipeline:
         returns False
         """
         return self._is_file_type(
-            filepath, file_types=["application/pdf", "application/octet-stream"]
+            filepath, file_types=["application/pdf"]
         )
 
     def is_doc(self, filepath):

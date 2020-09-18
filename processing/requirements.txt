@@ -11,3 +11,4 @@ SQLAlchemy==1.3.4
 scrapy-deltafetch==1.2.1
 boto3==1.14.16
 itemadapter==0.1.0
+elasticsearch==7.9.1

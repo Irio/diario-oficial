@@ -10,6 +10,7 @@ from scrapy.http import Request
 from scrapy.pipelines.files import FilesPipeline
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker
+import elasticsearch
 
 from gazette.settings import FILES_STORE
 
@@ -150,3 +151,40 @@ class QueridoDiarioFilesPipeline(FilesPipeline):
         if not urls:
             return
         yield from (RequestWithItem(u, item) for u in urls)
+
+
+class QueridoDiarioElasticsearch:
+    """
+    QueridoDiarioElasticsearch class can be used to export the items found by
+    the spiders into a Elastic Search server
+    """
+
+    def __init__(self, hosts, index):
+        self._hosts = hosts
+        self._index = index
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(
+            crawler.settings.getlist("ELASTICSEARCH_HOSTS", ["localhost"]),
+            crawler.settings.get("ELASTICSEARCH_INDEX"),
+        )
+
+    def open_spider(self, spider):
+        self._es = elasticsearch.Elasticsearch(hosts=self._hosts)
+        if not self._es.indices.exists(index=self._index):
+            body = {"mappings": {"properties": {"date": {"type": "date"}}}}
+            self._es.indices.create(index=self._index, body=body)
+
+    def close_spider(self, spider):
+        self._es.close()
+
+    def process_item(self, item, spider):
+        body = {
+            "checksum": item["file_checksum"],
+            "url": item["file_url"],
+            "territory_id": item["territory_id"],
+            "content": item["source_text"],
+            "date": item["date"],
+        }
+        self._es.create(index=self._index, id=item["file_checksum"], body=body)

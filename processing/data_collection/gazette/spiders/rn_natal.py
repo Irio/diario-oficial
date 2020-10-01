@@ -1,6 +1,7 @@
-from datetime import datetime
+from datetime import date, datetime
 
 import dateparser
+from dateutil.rrule import rrule, MONTHLY
 from scrapy import FormRequest
 
 from gazette.items import Gazette
@@ -11,15 +12,23 @@ class RnNatalSpider(BaseGazetteSpider):
 
     name = "rn_natal"
     allowed_domains = ["www.natal.rn.gov.br"]
+    start_date = date(2003, 1, 1)
 
     TERRITORY_ID = "2408102"
 
     def start_requests(self):
         base_url = "http://www.natal.rn.gov.br/dom/"
-        for year in range(2003, datetime.now().year + 1):
-            for month in range(1, 13):
-                data = dict(ano=str(year), mes=str(month).zfill(2), list="Listar")
-                yield FormRequest(url=base_url, formdata=data)
+
+        initial_date = date(self.start_date.year, self.start_date.month, 1)
+        end_date = date.today()
+
+        periods_of_interest = [
+            (date.year, date.month)
+            for date in rrule(freq=MONTHLY, dtstart=initial_date, until=end_date)
+        ]
+        for year, month in periods_of_interest:
+            data = {"ano": str(year), "mes": str(month).zfill(2), "list": "Listar"}
+            yield FormRequest(url=base_url, formdata=data)
 
     def parse(self, response):
         for entry in response.css("#texto a"):

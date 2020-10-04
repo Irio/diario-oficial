@@ -51,7 +51,7 @@ class PeRecifeSpider(BaseGazetteSpider):
         for date in dates:
             yield scrapy.Request(
                 url=self.EDITIONS_IN_DATE_URL.format(full_date=date.strftime("%Y%m%d")),
-                meta={"date": date},
+                meta={"gazette_date": date.date()},
                 callback=self.parse_editions_in_date,
             )
 
@@ -60,7 +60,7 @@ class PeRecifeSpider(BaseGazetteSpider):
         Parses available editions to request only Recife's gazette documents.
         """
         recife_editions = self._find_recife_editions(response.text)
-        date = response.meta["date"]
+        date = response.meta["gazette_date"]
 
         for edition in recife_editions:
             url = self.GAZETTE_URL.format(

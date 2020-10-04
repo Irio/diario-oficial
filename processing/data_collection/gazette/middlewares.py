@@ -1,13 +1,72 @@
-# -*- coding: utf-8 -*-
-# Define here the models for your spider middleware
-#
-# See documentation in:
-# https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-from scrapy import signals
+import datetime
+import logging
+
+from scrapy import Request, signals
+
+
+class GazetteDateFilteringSpiderMiddleware:
+    @classmethod
+    def from_crawler(cls, crawler):
+        s = cls()
+        s.logger = logging.getLogger(f"{__name__}.{cls.__name__}")
+        return s
+
+    def process_spider_output(self, response, result, spider):
+        for request_or_item in result:
+            if isinstance(request_or_item, Request):
+                if request_or_item.dont_filter is True:
+                    yield request_or_item
+                    continue
+
+                gazette_date = request_or_item.meta.get("gazette_date")
+                if gazette_date is None:
+                    yield request_or_item
+                    continue
+            else:
+                gazette_date = request_or_item["date"]
+
+            if not (
+                self.filtered_by_start_date(gazette_date, spider)
+                or self.filtered_by_end_date(gazette_date, spider)
+            ):
+                yield request_or_item
+            else:
+                self.logger.warning(
+                    f"Request or item outside of the desired date range was dropped: {request_or_item}"
+                )
+
+    def process_start_requests(self, start_requests, spider):
+        yield from self.process_spider_output(None, start_requests, spider)
+
+    def filtered_by_start_date(self, date, spider):
+        if not hasattr(spider, "start_date"):
+            return False
+
+        return spider.start_date > self.parse_date(date, spider.start_date)
+
+    def filtered_by_end_date(self, date, spider):
+        if not hasattr(spider, "end_date"):
+            return False
+
+        return spider.end_date < self.parse_date(date, spider.end_date)
+
+    def parse_date(self, date, default_date):
+        if isinstance(date, dict):
+            year = date.get("year")
+            month = date.get("month", default_date.month)
+            day = date.get("day", default_date.day)
+            parsed_date = datetime.date(year, month, day)
+        elif isinstance(date, datetime.date):
+            parsed_date = date
+        elif isinstance(date, datetime.datetime):
+            parsed_date = date.date()
+        else:
+            raise Exception(f"Date {date} cannot be parsed.")
+
+        return parsed_date
 
 
 class GazetteSpiderMiddleware:
-
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
     # passed objects.

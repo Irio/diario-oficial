@@ -5,21 +5,12 @@ import os
 import subprocess
 
 from itemadapter import ItemAdapter
-from scrapy.exceptions import DropItem
 from scrapy.http import Request
 from scrapy.pipelines.files import FilesPipeline
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker
 
 from gazette.settings import FILES_STORE
-
-
-class GazetteDateFilteringPipeline:
-    def process_item(self, item, spider):
-        if hasattr(spider, "start_date"):
-            if spider.start_date > item.get("date"):
-                raise DropItem("Droping all items before {}".format(spider.start_date))
-        return item
 
 
 class ExtractTextPipeline:

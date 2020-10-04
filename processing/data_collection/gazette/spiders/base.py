@@ -9,13 +9,18 @@ from gazette.items import Gazette
 
 
 class BaseGazetteSpider(scrapy.Spider):
-    def __init__(self, start_date=None, *args, **kwargs):
+    def __init__(self, start_date=None, end_date=None, *args, **kwargs):
         super(BaseGazetteSpider, self).__init__(*args, **kwargs)
 
         if start_date is not None:
-            parsed_data = dateparser.parse(start_date)
+            parsed_data = dateparser.parse(start_date, settings={"DATE_ORDER": "DMY"})
             if parsed_data is not None:
                 self.start_date = parsed_data.date()
+
+        if end_date is not None:
+            parsed_data = dateparser.parse(end_date, settings={"DATE_ORDER": "DMY"})
+            if parsed_data is not None:
+                self.end_date = parsed_data.date()
 
 
 class FecamGazetteSpider(BaseGazetteSpider):

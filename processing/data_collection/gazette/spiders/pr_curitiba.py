@@ -18,35 +18,36 @@ class PrCuritibaSpider(BaseGazetteSpider):
             yield scrapy.FormRequest(
                 "http://legisladocexterno.curitiba.pr.gov.br/DiarioConsultaExterna_Pesquisa.aspx",
                 formdata={"ctl00$cphMasterPrincipal$ddlGrAno": str(year)},
-                meta={"year": year},
+                meta={"gazette_date": {"year": year}},
                 callback=self.parse_year,
             )
 
     def parse_year(self, response):
-        for month in range(12):
-            if date(response.meta["year"], month + 1, 1) <= date.today():
+        year = response.meta["gazette_date"]["year"]
+        for month in range(1, 13):
+            if date(year, month, 1) <= date.today():
                 formdata = {
                     "__EVENTTARGET": "ctl00$cphMasterPrincipal$TabContainer1",
-                    "__EVENTARGUMENT": f"activeTabChanged:{month}",
+                    "__EVENTARGUMENT": f"activeTabChanged:{month - 1}",
                     "ctl00_cphMasterPrincipal_TabContalegacyDealPooliner1_ClientState": '{{"ActiveTabIndex":{},"TabState":[true,true,true,true,true,true,true,true,true,true,true,true]}}',
                 }
                 yield scrapy.FormRequest.from_response(
                     response,
                     formdata=formdata,
-                    meta={"month": month},
+                    meta={"gazette_date": {"month": month, "year": year}},
                     callback=self.parse_month,
                 )
 
     def parse_month(self, response):
         page_count = len(response.css(".grid_Pager:nth-child(1) table td").extract())
-        month = response.meta["month"]
+        month = response.meta["gazette_date"]["month"]
         # The first page of pagination cannot be accessed by page number
         yield scrapy.FormRequest.from_response(
             response,
             formdata={
                 "__EVENTTARGET": "ctl00$cphMasterPrincipal$TabContainer1",
                 "ctl00_cphMasterPrincipal_TabContalegacyDealPooliner1_ClientState": '{{"ActiveTabIndex":{},"TabState":[true,true,true,true,true,true,true,true,true,true,true,true]}}',
-                "__EVENTARGUMENT": f"activeTabChanged:{month}",
+                "__EVENTARGUMENT": f"activeTabChanged:{month - 1}",
             },
             callback=self.parse_page,
         )
@@ -77,7 +78,7 @@ class PrCuritibaSpider(BaseGazetteSpider):
                     response,
                     formdata=formdata,
                     callback=self.parse_regular_edition,
-                    meta={"parsed_date": parsed_date},
+                    meta={"gazette_date": parsed_date},
                 )
             else:
                 yield Gazette(
@@ -92,7 +93,7 @@ class PrCuritibaSpider(BaseGazetteSpider):
                 )
 
     def parse_regular_edition(self, response):
-        parsed_date = response.meta["parsed_date"]
+        parsed_date = response.meta["gazette_date"]
         gazette_id = response.selector.re_first("Id=(\d+)")
         return Gazette(
             date=parsed_date,

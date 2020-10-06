@@ -38,6 +38,7 @@ class Gazette(DeclarativeBase):
     id = Column(Integer, primary_key=True)
     source_text = Column(Text)
     date = Column(Date)
+    edition_number = Column(String)
     is_extra_edition = Column(Boolean)
     is_parsed = Column(Boolean, default=False)
     power = Column(String)

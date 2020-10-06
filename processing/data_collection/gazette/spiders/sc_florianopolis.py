@@ -36,8 +36,11 @@ class ScFlorianopolisSpider(BaseGazetteSpider):
             if hasattr(self, "start_date") and gazette_date < self.start_date:
                 continue
 
+            gazette_edition_number = link.css("::attr(title)").re_first(r"Edição (\d+)")
+
             yield Gazette(
                 date=gazette_date,
+                edition_number=gazette_edition_number,
                 file_urls=(url,),
                 is_extra_edition=self.is_extra(link),
                 territory_id=self.TERRITORY_ID,

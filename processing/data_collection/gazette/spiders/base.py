@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import re
 from datetime import datetime
 
@@ -13,9 +12,16 @@ class BaseGazetteSpider(scrapy.Spider):
         super(BaseGazetteSpider, self).__init__(*args, **kwargs)
 
         if start_date is not None:
-            parsed_data = dateparser.parse(start_date)
-            if parsed_data is not None:
-                self.start_date = parsed_data.date()
+            try:
+                self.start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+                self.logger.info(f"Collecting gazettes after {self.start_date}")
+            except ValueError:
+                self.logger.exception(
+                    f"Unable to parse {start_date}. Use %Y-%m-d date format."
+                )
+                raise
+        else:
+            self.logger.info("Collecting all gazettes available")
 
 
 class FecamGazetteSpider(BaseGazetteSpider):

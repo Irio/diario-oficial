@@ -41,6 +41,13 @@ The following example is the command to run the gazette crawler for Florianópol
 $ docker-compose run --rm processing bash -c "cd data_collection && scrapy crawl sc_florianopolis"
 ```
 
+You can limit the gazettes you want to download passing `start_date` as argument with `YYYY-MM-DD` format. The
+following command will download only gazettes which date is greater than 01/Sep/2020:
+
+```console
+$ docker-compose run --rm processing bash -c "cd data_collection && scrapy crawl sc_florianopolis -a start_date=2020-09-01"
+```
+
 ## Tips and tricks
 
 There is a make target allowing you run the scrapy shell inside the container used by the crawler:

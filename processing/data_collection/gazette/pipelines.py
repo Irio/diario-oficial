@@ -46,12 +46,16 @@ class ExtractTextPipeline:
             )
 
         item_file = item["files"][0]
-        item["file_path"] = item_file["path"]
-        item["file_url"] = item_file["url"]
-        item["file_checksum"] = item_file["checksum"]
-
-        item.pop("files")
-        item.pop("file_urls")
+        if item_file.get("path", None) is not None:
+            item["file_path"] = item_file["path"]
+        if item_file.get("url", None) is not None:
+            item["file_url"] = item_file["url"]
+        if item_file.get("checksum", None) is not None:
+            item["file_checksum"] = item_file["checksum"]
+        if item.get("files", None) is not None:
+            item.pop("files")
+        if item.get("file_irls", None) is not None:
+            item.pop("file_urls")
         return item
 
     def pdf_source_text(self, item):

@@ -8,7 +8,7 @@ from gazette.spiders.base import BaseGazetteSpider
 
 
 class PeJaboataoDosGuararapesSpider(BaseGazetteSpider):
-    TERRITORY_ID = 2607901
+    TERRITORY_ID = "2607901"
     name = "pe_jaboatao_dos_guararapes"
     allowed_domains = ["diariooficial.jaboatao.pe.gov.br"]
     start_urls = ["https://diariooficial.jaboatao.pe.gov.br/"]
@@ -37,13 +37,8 @@ class PeJaboataoDosGuararapesSpider(BaseGazetteSpider):
         return Gazette(
             date=response.meta["date"],
             file_urls=[file_url],
-            is_extra_edition=self.is_extra_edition(file_url),
+            is_extra_edition="edicao-extraordinaria" in file_url,
             territory_id=self.TERRITORY_ID,
             power="executive",
             scraped_at=datetime.utcnow(),
         )
-
-    def is_extra_edition(self, url):
-        if "edicao-extraordinaria" in url:
-            return True
-        return False

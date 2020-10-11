@@ -11,6 +11,7 @@ from w3lib.html import remove_tags
 from pathlib import Path
 from typing import Optional
 from hashlib import sha1
+from fake_useragent import UserAgent
 
 
 class SpSantoAndreSpider(BaseGazetteSpider):
@@ -20,7 +21,8 @@ class SpSantoAndreSpider(BaseGazetteSpider):
         "ITEM_PIPELINES": {
             "gazette.pipelines.GazetteDateFilteringPipeline": 50,
             "gazette.pipelines.ExtractTextPipeline": 200,
-        }
+        },
+        "USER_AGENT": UserAgent().random,
     }
 
     allowed_domains = ["santoandre.sp.gov.br"]
@@ -36,22 +38,12 @@ class SpSantoAndreSpider(BaseGazetteSpider):
         for url in self.start_urls:
             yield Request(url, callback=self.search_by_date)
 
-    def _get_form_params(self, response):
-        view_state = response.css("#__VIEWSTATE::attr(value)").get()
-        event_validation = response.css("#__EVENTVALIDATION::attr(value)").get()
-        return view_state, event_validation
-
     def search_by_date(self, response):
-        VIEW_STATE, EVENT_VALIDATION = self._get_form_params(response)
         yield FormRequest.from_response(
             response,
             callback=self.parse,
             formname="aspnetForm",
             formdata={
-                "__EVENTTARGET": "",
-                "__EVENTARGUMENT": "",
-                "__VIEWSTATE": VIEW_STATE,
-                "__EVENTVALIDATION": EVENT_VALIDATION,
                 "ctl00$ContentPlaceHolder1$dt_inicio": self.start_date.strftime(
                     "%d/%m/%Y"
                 ),
@@ -61,17 +53,17 @@ class SpSantoAndreSpider(BaseGazetteSpider):
             method="POST",
         )
 
-    def _save_pdf(self, response, path: Path, item):
+    def _save_pdf(self, response, path, item):
         if not isinstance(path, Path):
-            raise TypeError("O parâmetro path precisa ser uma instância de Path.")
+            raise TypeError("The path parameter must be an instance of Path.")
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "wb") as f:
             f.write(response.body)
         yield item
 
-    def _parse_table_elements(self, element: Selector):
+    def _parse_table_elements(self, element):
         if not isinstance(element, Selector):
-            raise TypeError("O parâmetro element deve ser uma instancia de Selector.")
+            raise TypeError("The parameter element must be a Selector instance.")
         doPostBack, num_edicao, date = element.xpath(".//td").getall()
         event_target = unquote(
             re.search(self.JAVASCRIPT_POSTBACK_REGEX, doPostBack).groups()[0]
@@ -81,7 +73,7 @@ class SpSantoAndreSpider(BaseGazetteSpider):
 
         return event_target, num_edicao, date
 
-    def _format_filename(self, num_edicao: str, event_target: str, date):
+    def _format_filename(self, num_edicao, event_target, date):
         filename = sha1(
             str.encode(
                 f"{self.allowed_domains[0].replace('.','')}-{event_target}-{num_edicao}-{date}"
@@ -91,16 +83,15 @@ class SpSantoAndreSpider(BaseGazetteSpider):
         file_path = Path(f"{FILES_STORE}full/{filename}")
         return file_path
 
-    def _handle_navigation(self, response, current_page: int) -> Optional[str]:
-        """Responsável por realizar a identificação da próxima página a ser navegada na paginação.
+    def _handle_navigation(self, response, current_page):
+        """Identifies the elements for pagination.
         Parameters
         ----------
         current_page : int
-            Número da pagina em exibição pela navegação.
-        Returns
+            The current page number of the pagination
+        Returns : str or None
         -------
-        Optional[str]
-            Havendo paginação retornará parâmetro __EVENTTARGET para chamada POST da próxima página a ser visitada, do contrário, None.
+            If there is a pagination to follow, this function will return the __EVENTTARGET parameter, otherwise, will return None.
         """
         next_page_element = (
             response.css(".DataGrid")
@@ -131,7 +122,6 @@ class SpSantoAndreSpider(BaseGazetteSpider):
         records = response.css(".DataGrid").xpath(
             ".//*[contains(@class, 'DataGridItems')] | .//*[contains(@class, 'DataGridAlternating')]"
         )
-        VIEW_STATE, EVENT_VALIDATION = self._get_form_params(response)
         for element in records:
             EVENT_TARGET, num_edicao, date = self._parse_table_elements(element)
             file_path = self._format_filename(num_edicao, EVENT_TARGET, date)
@@ -150,9 +140,6 @@ class SpSantoAndreSpider(BaseGazetteSpider):
                 formname="aspnetForm",
                 formdata={
                     "__EVENTTARGET": EVENT_TARGET,
-                    "__EVENTARGUMENT": "",
-                    "__VIEWSTATE": VIEW_STATE,
-                    "__EVENTVALIDATION": EVENT_VALIDATION,
                     "ctl00$ContentPlaceHolder1$dt_inicio": self.start_date.strftime(
                         "%d/%m/%Y"
                     ),
@@ -170,9 +157,6 @@ class SpSantoAndreSpider(BaseGazetteSpider):
                 formname="aspnetForm",
                 formdata={
                     "__EVENTTARGET": event_target,
-                    "__EVENTARGUMENT": "",
-                    "__VIEWSTATE": VIEW_STATE,
-                    "__EVENTVALIDATION": EVENT_VALIDATION,
                     "ctl00$ContentPlaceHolder1$dt_inicio": self.start_date.strftime(
                         "%d/%m/%Y"
                     ),

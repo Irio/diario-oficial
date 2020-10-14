@@ -23,7 +23,7 @@ The municipality id (IBGE code) can be found on [Wikipedia](https://pt.wikipedia
 | 13 | Guarulhos | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/4) |
 | 14 | Campinas | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/2) |
 | 15 | São Luís | :soon: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/22) |
-| 16 | São Gonçalo | | | |
+| 16 | São Gonçalo | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/88) |
 | 17 | Maceió | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/32) |
 | 18 | Duque de Caxias | | | |
 | 19 | Natal | :white_check_mark: | [issue](https://github.com/okfn-brasil/diario-oficial/issues/189) | [PR](https://github.com/okfn-brasil/diario-oficial/pull/192) |

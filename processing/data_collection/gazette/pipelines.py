@@ -51,7 +51,33 @@ class SQLDatabasePipeline:
         if self.database_url is None:
             return item
 
+<<<<<<< HEAD
         session = self.Session()
+=======
+        if self.is_doc(item["files"][0]["path"]):
+            item["source_text"] = self.doc_source_text(item)
+        elif self.is_pdf(item["files"][0]["path"]):
+            item["source_text"] = self.pdf_source_text(item)
+        elif self.is_txt(item["files"][0]["path"]):
+            item["source_text"] = self.txt_source_text(item)
+        else:
+            raise Exception(
+                "Unsupported file type: " + self.get_file_type(item["files"][0]["path"])
+            )
+
+        item_file = item["files"][0]
+        if item_file.get("path", None) is not None:
+            item["file_path"] = item_file["path"]
+        if item_file.get("url", None) is not None:
+            item["file_url"] = item_file["url"]
+        if item_file.get("checksum", None) is not None:
+            item["file_checksum"] = item_file["checksum"]
+        if item.get("files", None) is not None:
+            item.pop("files")
+        if item.get("file_irls", None) is not None:
+            item.pop("file_urls")
+        return item
+>>>>>>> a86454ec94750e94e39aacae482557b4909b1b03
 
         fields = [
             "source_text",

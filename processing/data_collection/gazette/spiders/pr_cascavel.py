@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from dateparser import parse
-import datetime as dt
 
 from gazette.items import Gazette
 from gazette.spiders.base import BaseGazetteSpider
@@ -22,12 +21,7 @@ class PrCascavelSpider(BaseGazetteSpider):
                 power = "executive" if "Executivo" in link_text else "legislature"
                 url = response.urljoin(link.xpath("./@href").extract_first(""))
                 yield Gazette(
-                    date=date,
-                    file_urls=[url],
-                    is_extra_edition=False,
-                    territory_id=self.TERRITORY_ID,
-                    power=power,
-                    scraped_at=dt.datetime.utcnow(),
+                    date=date, file_urls=[url], is_extra_edition=False, power=power,
                 )
         next_page_xpath = '//a[@title="Próxima página"]/@href'
         next_page_url = response.xpath(next_page_xpath).extract_first()

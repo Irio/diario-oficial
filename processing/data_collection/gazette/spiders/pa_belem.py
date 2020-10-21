@@ -1,5 +1,4 @@
 import json
-from datetime import datetime
 
 import requests
 import scrapy
@@ -40,7 +39,7 @@ class PaBelemSpider(BaseGazetteSpider):
         """
         @url https://sistemas.belem.pa.gov.br/diario-consulta-api/diarios?start=0&rows={x]
         @returns requests 1
-        @scrapes date file_urls is_extra_edition territory_id power scraped_at
+        @scrapes date file_urls is_extra_edition power
         """
 
         data = json.loads(response.body)["response"]
@@ -55,7 +54,5 @@ class PaBelemSpider(BaseGazetteSpider):
                 date=date,
                 file_urls=[url],
                 is_extra_edition=bool(None),
-                territory_id=self.TERRITORY_ID,
                 power="executive",
-                scraped_at=datetime.utcnow(),
             )

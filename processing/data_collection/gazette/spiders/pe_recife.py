@@ -73,9 +73,7 @@ class PeRecifeSpider(BaseGazetteSpider):
             yield Gazette(
                 date=date,
                 file_urls=[url],
-                territory_id=self.TERRITORY_ID,
                 is_extra_edition=self._is_extra(edition),
-                scraped_at=dt.datetime.utcnow(),
                 power="executive_legislative",
             )
 

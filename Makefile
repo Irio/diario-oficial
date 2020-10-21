@@ -25,7 +25,7 @@ run_spider:
 	docker-compose run --rm processing bash -c "cd data_collection && scrapy crawl $(SPIDER)"
 
 sql:
-	docker-compose run --rm postgres psql --username gazette -h postgres -W
+	docker-compose run --rm processing sqlite3 data_collection/querido-diario.db
 
 clean:
 	find ./data/* -type d -exec rm -rv {} \;

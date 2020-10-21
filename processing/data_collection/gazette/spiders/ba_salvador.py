@@ -65,11 +65,7 @@ class BaSalvadorSpider(BaseGazetteSpider):
         pdf_url = response.css("#PDFId embed::attr(src)").extract_first()
 
         yield Gazette(
-            date=parsed_date.date(),
-            file_urls=[pdf_url],
-            territory_id=self.TERRITORY_ID,
-            power=self.power,
-            scraped_at=datetime.datetime.utcnow(),
+            date=parsed_date.date(), file_urls=[pdf_url], power=self.power,
         )
 
 

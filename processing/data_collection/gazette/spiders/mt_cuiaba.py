@@ -45,7 +45,5 @@ class MtCuiabaSpider(BaseGazetteSpider):
                 date=parse(edition_date, languages=["pt"]),
                 file_urls=[edition_url],
                 is_extra_edition=edition["suplement"],
-                territory_id=self.TERRITORY_ID,
                 power="executive",
-                scraped_at=datetime.datetime.utcnow(),
             )

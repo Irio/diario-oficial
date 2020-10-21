@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from scrapy import Spider
 from gazette.items import Gazette
-from datetime import datetime
 import dateparser
 
 
@@ -27,7 +26,5 @@ class SpJauSpider(Spider):
                 date=date,
                 file_urls=[url],
                 is_extra_edition="extra" in gazette_title,
-                territory_id=self.TERRITORY_ID,
-                scraped_at=datetime.utcnow(),
                 power="executive",
             )

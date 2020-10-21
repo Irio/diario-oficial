@@ -39,9 +39,7 @@ class CeFortalezaSpider(BaseGazetteSpider):
                 date=date,
                 file_urls=[url],
                 is_extra_edition=extra_edition,
-                territory_id=self.TERRITORY_ID,
                 power="executive",
-                scraped_at=datetime.utcnow(),
             )
 
         for page_number in response.css(self.NEXT_PAGE_CSS).re("#(\d)+"):

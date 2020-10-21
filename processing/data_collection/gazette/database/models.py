@@ -1,6 +1,5 @@
 import datetime as dt
 
-from decouple import config
 from sqlalchemy import (
     create_engine,
     Column,
@@ -19,16 +18,12 @@ from sqlalchemy.orm import relationship
 DeclarativeBase = declarative_base()
 
 
-def db_connect():
-    return create_engine(config("DATABASE_URL"))
-
-
 def create_tables(engine):
     DeclarativeBase.metadata.create_all(engine)
 
 
-def initialize_database():
-    engine = db_connect()
+def initialize_database(database_url):
+    engine = create_engine(database_url)
     create_tables(engine)
     return engine
 
@@ -40,7 +35,6 @@ class Gazette(DeclarativeBase):
     date = Column(Date)
     edition_number = Column(String)
     is_extra_edition = Column(Boolean)
-    is_parsed = Column(Boolean, default=False)
     power = Column(String)
     file_checksum = Column(String)
     file_path = Column(String)
@@ -49,6 +43,7 @@ class Gazette(DeclarativeBase):
     created_at = Column(DateTime, default=dt.datetime.utcnow)
     territory = relationship("Territory", back_populates="gazettes")
     territory_id = Column(String, ForeignKey("territories.id"))
+    processed = Column(Boolean)
     __table_args__ = (UniqueConstraint("territory_id", "date", "file_checksum"),)
 
 

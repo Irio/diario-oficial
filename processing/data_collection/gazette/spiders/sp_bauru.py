@@ -2,7 +2,6 @@
 from scrapy import Request
 from gazette.spiders.base import BaseGazetteSpider
 from gazette.items import Gazette
-from datetime import datetime
 import dateparser
 
 
@@ -49,7 +48,5 @@ class SpBauruSpider(BaseGazetteSpider):
                 date=date,
                 file_urls=[url],
                 is_extra_edition="especial" in url.lower(),
-                territory_id=self.TERRITORY_ID,
-                scraped_at=datetime.utcnow(),
                 power="executive",
             )

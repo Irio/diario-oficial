@@ -40,7 +40,5 @@ class RoPortoVelho(BaseGazetteSpider):
                 date=date,
                 file_urls=[url],
                 is_extra_edition=is_extra_edition,
-                territory_id=self.TERRITORY_ID,
                 power="executive_legislature",
-                scraped_at=dt.datetime.utcnow(),
             )

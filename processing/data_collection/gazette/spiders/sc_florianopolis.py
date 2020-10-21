@@ -39,6 +39,8 @@ class ScFlorianopolisSpider(BaseGazetteSpider):
 
             gazette_edition_number = link.css("::attr(title)").re_first(r"Edição (\d+)")
 
+            gazette_edition_number = link.css("::attr(title)").re_first(r"Edição (\d+)")
+
             yield Gazette(
                 date=gazette_date,
                 edition_number=gazette_edition_number,

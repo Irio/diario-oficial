@@ -1,75 +1,75 @@
-from dateparser import parse
-import datetime as dt
-import requests
+import datetime
+from urllib.parse import urlencode
+
+import dateparser
 import scrapy
 
 from gazette.items import Gazette
 from gazette.spiders.base import BaseGazetteSpider
 
-last_page_number_xpath = (
-    '//div[@class="paginacao"]/ul[@class="pagination"]/li[last()-1]/a[last()]/text()'
-)
-
 
 class ToPalmasSpider(BaseGazetteSpider):
     TERRITORY_ID = "1721000"
     name = "to_palmas"
-    allowed_domains = ["diariooficial.palmas.to.gov.br", "legislativo.palmas.to.gov.br"]
-    to_palmas_url = (
-        "http://diariooficial.palmas.to.gov.br/todos-diarios/?page={page_number}"
-    )
-    start_urls = ["http://diariooficial.palmas.to.gov.br/todos-diarios/"]
+    allowed_domains = ["diariooficial.palmas.to.gov.br"]
+    start_date = datetime.date(2010, 3, 22)  # First gazette available
+
+    custom_settings = {
+        "MEDIA_ALLOW_REDIRECTS": True,
+    }
+
+    def start_requests(self):
+        dt_inicial = self.start_date.strftime("%d/%m/%Y")
+        dt_final = datetime.date.today().strftime("%d/%m/%Y")
+
+        url_params = {
+            "opcao": "datas",
+            "dt_inicial": dt_inicial,
+            "dt_final": dt_final,
+            "btn_search": "Search",
+        }
+        params = urlencode(url_params)
+        url = f"http://diariooficial.palmas.to.gov.br/resultado-pesquisa/?{params}"
+        yield scrapy.Request(url)
+
+    def _get_date_from_parent_edition(self, response, gazette):
+        parent_gazette_class_id = gazette.re_first(r"treegrid-parent-(\d+)")
+        parent_gazette_class = f"treegrid-{parent_gazette_class_id}"
+        main_edition_gazette = response.css(f".{parent_gazette_class}")
+        return main_edition_gazette.xpath("./td[2]/text()").get()
 
     def parse(self, response):
-        last_page_number_str = response.xpath(last_page_number_xpath).extract_first()
-        last_page_number = int(last_page_number_str)
-        for page_number in range(1, last_page_number + 1):
-            url = self.to_palmas_url.format(page_number=page_number)
-            yield scrapy.Request(url=url, callback=self.parse_page)
+        gazettes = response.css(".diario-resultado-pesquisa tbody tr")
+        for gazette in gazettes:
+            gazette_date = gazette.xpath("./td[2]/text()").get()
+            gazette_url = response.urljoin(gazette.css("a::attr(href)").get())
 
-    def parse_page(self, response):
-        li_list = response.css("div.diario-content-todos > ul > li")
-        for li in li_list:
-            edicao, data = li.xpath('.//*[@id="audio-titulo"]/text()').re(
-                r"(\d*)ª Edição de (.*$)"
+            is_extra_edition = bool(gazette.xpath(".//*[contains(., 'Suplemento')]"))
+            if is_extra_edition:
+                # Extra Editions doesn't have a date in its line. We need to get it from
+                # the main edition of that day
+                gazette_date = self._get_date_from_parent_edition(response, gazette)
+
+            item = Gazette(
+                date=dateparser.parse(gazette_date, languages=["pt"]).date(),
+                is_extra_edition=is_extra_edition,
+                territory_id=self.TERRITORY_ID,
+                scraped_at=datetime.datetime.utcnow(),
+                power="executive_legislative",
             )
-            url_edicao = li.xpath('.//*[@id="detalhes"]/a/@href').extract_first()
-            abs_url = response.urljoin(url_edicao)
-            pdf_url = requests.head(abs_url, allow_redirects=True).url
-            data_publicacao = parse(data, languages=["pt"]).date()
-            gazette_object = self.create_gazette_object(
-                date=data_publicacao, file_url=pdf_url, is_extra_edition=False
+            yield scrapy.Request(
+                gazette_url,
+                method="HEAD",
+                callback=self.parse_pdf_url,
+                cb_kwargs={"item": item},
             )
-            xpath_suplementos = li.xpath('.//*[@id="btn_baixar_titulo"]')
-            for xpath_suplemento in xpath_suplementos:
-                suplemento_url = xpath_suplemento.xpath("./@href").extract_first()
-                suplemento_pdf_url = requests.get(
-                    response.urljoin(suplemento_url), allow_redirects=True
-                ).url
-                # suplemento_nome = xpath_suplemento.xpath(
-                #     './text()'
-                # ).extract_first()
-                gazette_object_extra = self.create_gazette_object(
-                    date=data_publicacao,
-                    file_url=suplemento_pdf_url,
-                    is_extra_edition=True,
-                )
-                yield gazette_object_extra
 
-            yield gazette_object
+        next_pages_urls = response.css(".pagination a::attr(href)").getall()
+        for next_page_url in next_pages_urls:
+            yield scrapy.Request(response.urljoin(next_page_url))
 
-    def create_gazette_object(
-        self, date, file_url, is_extra_edition=False, scraped_at=None, power="executive"
-    ):
-        if not scraped_at:
-            scraped_at = dt.datetime.utcnow()
-        file_urls = [file_url]
-        gazette_object = Gazette(
-            date=date,
-            file_urls=file_urls,
-            is_extra_edition=is_extra_edition,
-            territory_id=self.TERRITORY_ID,
-            scraped_at=scraped_at,
-            power=power,
-        )
-        return gazette_object
+    def parse_pdf_url(self, response, item):
+        gazette_pdf_url = response.url
+        item = Gazette(**item)
+        item["file_urls"] = [gazette_pdf_url]
+        yield item

@@ -1,9 +1,9 @@
-from pathlib import Path
-import hashlib
-import magic
+import datetime as dt
 import os
 import subprocess
+from pathlib import Path
 
+import magic
 from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
 from scrapy.http import Request
@@ -11,6 +11,7 @@ from scrapy.pipelines.files import FilesPipeline
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker
 
+from gazette.database.models import initialize_database, Gazette
 from gazette.settings import FILES_STORE
 
 
@@ -22,12 +23,33 @@ class GazetteDateFilteringPipeline:
         return item
 
 
+class DefaultValuesPipeline:
+    """ Add defaults values field, if not already set in the item """
+
+    default_field_values = {
+        "territory_id": lambda spider: getattr(spider, "TERRITORY_ID"),
+        "scraped_at": lambda spider: dt.datetime.utcnow(),
+    }
+
+    def process_item(self, item, spider):
+        for field in self.default_field_values:
+            if field not in item:
+                item[field] = self.default_field_values.get(field)(spider)
+        return item
+
+
 class ExtractTextPipeline:
     """
     Identify file format and call the right tool to extract the text from it
     """
 
     def process_item(self, item, spider):
+        extract_text_from_file = spider.settings.getbool(
+            "QUERIDODIARIO_EXTRACT_TEXT_FROM_FILE", True
+        )
+        if not extract_text_from_file:
+            return item
+
         if self.is_doc(item["files"][0]["path"]):
             item["source_text"] = self.doc_source_text(item)
         elif self.is_pdf(item["files"][0]["path"]):
@@ -39,10 +61,6 @@ class ExtractTextPipeline:
                 "Unsupported file type: " + self.get_file_type(item["files"][0]["path"])
             )
 
-        for key, value in item["files"][0].items():
-            item[f"file_{key}"] = value
-        item.pop("files")
-        item.pop("file_urls")
         return item
 
     def pdf_source_text(self, item):
@@ -115,6 +133,52 @@ class ExtractTextPipeline:
         Generic method to check if a identified file type matches a given list of types
         """
         return self.get_file_type(filepath) in file_types
+
+
+class SQLDatabasePipeline:
+    def __init__(self, database_url):
+        self.database_url = database_url
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        database_url = crawler.settings.get("QUERIDODIARIO_DATABASE_URL")
+        return cls(database_url=database_url)
+
+    def open_spider(self, spider):
+        if self.database_url is not None:
+            engine = initialize_database(self.database_url)
+            self.Session = sessionmaker(bind=engine)
+
+    def process_item(self, item, spider):
+        if self.database_url is None:
+            return item
+
+        session = self.Session()
+
+        item_file = item["files"][0]
+        item["file_path"] = item_file["path"]
+        item["file_url"] = item_file["url"]
+        item["file_checksum"] = item_file["checksum"]
+        item.pop("files")
+        item.pop("file_urls")
+
+        gazette = Gazette(**item)
+        try:
+            session.add(gazette)
+            session.commit()
+        except IntegrityError:
+            spider.logger.warning(
+                f"Gazette from {item['date']} already exists in the database."
+            )
+            session.rollback()
+        except Exception:
+            session.rollback()
+            raise
+
+        finally:
+            session.close()
+
+        return item
 
 
 class RequestWithItem(Request):

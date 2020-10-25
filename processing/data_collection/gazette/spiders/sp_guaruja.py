@@ -8,7 +8,7 @@ from gazette.spiders.base import BaseGazetteSpider
 
 
 class SpGuaruja(BaseGazetteSpider):
-    MUNICIPALITY_ID = "3518701"
+    TERRITORY_ID = "3518701"
     name = "sp_guaruja"
     allowed_domains = ["guaruja.sp.gov.br"]
     start_urls = ["http://www.guaruja.sp.gov.br/index.php/diario-oficial/"]
@@ -31,7 +31,7 @@ class SpGuaruja(BaseGazetteSpider):
                     date=date,
                     file_urls=[url],
                     is_extra_edition=is_extra_edition,
-                    municipality_id=self.MUNICIPALITY_ID,
+                    territory_id=self.TERRITORY_ID,
                     power="executive_legislature",
                     scraped_at=datetime.utcnow(),
                 )

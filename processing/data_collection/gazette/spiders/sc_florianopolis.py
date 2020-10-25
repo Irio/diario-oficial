@@ -2,7 +2,7 @@ import re
 from datetime import date, datetime
 
 from dateparser import parse
-from dateutil.relativedelta import relativedelta
+from dateutil.rrule import MONTHLY, rrule
 from scrapy import FormRequest
 
 from gazette.items import Gazette
@@ -11,20 +11,23 @@ from gazette.spiders.base import BaseGazetteSpider
 
 class ScFlorianopolisSpider(BaseGazetteSpider):
     name = "sc_florianopolis"
-    URL = "http://www.pmf.sc.gov.br/governo/index.php?pagina=govdiariooficial"
     TERRITORY_ID = "4205407"
-    AVAILABLE_FROM = date(2015, 1, 1)  # actually from June/2009
+
+    start_date = date(2009, 6, 1)
 
     def start_requests(self):
-        target = date.today()
-        while target >= self.AVAILABLE_FROM:
-            year, month = str(target.year), str(target.month)
-            data = dict(ano=year, mes=month, passo="1", enviar="")
-            yield FormRequest(url=self.URL, formdata=data, callback=self.parse)
-            if hasattr(self, "start_date") and target <= self.start_date:
-                break
+        end_date = date.today()
 
-            target = target - relativedelta(months=1)
+        periods_of_interest = [
+            (date.year, date.month)
+            for date in rrule(freq=MONTHLY, dtstart=self.start_date, until=end_date)
+        ]
+        for year, month in periods_of_interest:
+            data = dict(ano=str(year), mes=str(month), passo="1", enviar="")
+            yield FormRequest(
+                "http://www.pmf.sc.gov.br/governo/index.php?pagina=govdiariooficial",
+                formdata=data,
+            )
 
     def parse(self, response):
         for link in response.css("ul.listagem li a"):
@@ -33,11 +36,12 @@ class ScFlorianopolisSpider(BaseGazetteSpider):
                 continue
 
             gazette_date = self.get_date(link)
-            if hasattr(self, "start_date") and gazette_date < self.start_date:
-                continue
+
+            gazette_edition_number = link.css("::attr(title)").re_first(r"Edição (\d+)")
 
             yield Gazette(
                 date=gazette_date,
+                edition_number=gazette_edition_number,
                 file_urls=(url,),
                 is_extra_edition=self.is_extra(link),
                 territory_id=self.TERRITORY_ID,

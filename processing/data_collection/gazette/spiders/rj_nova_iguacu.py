@@ -22,9 +22,9 @@ class RjNovaIguacu(BaseGazetteSpider):
 
     def parse(self, response):
         """
-            @url http://www.novaiguacu.rj.gov.br/diario-oficial/?data=2018-05-16
-            @returns items 1 1
-            @scrapes date file_urls is_extra_edition territory_id power scraped_at
+        @url http://www.novaiguacu.rj.gov.br/diario-oficial/?data=2018-05-16
+        @returns items 1 1
+        @scrapes date file_urls is_extra_edition territory_id power scraped_at
         """
         link = response.css("div.caption h4 a")
         if not link:

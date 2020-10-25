@@ -1,52 +1,48 @@
-from dateparser import parse
 from datetime import datetime
 
 import scrapy
+from dateparser import parse
 
 from gazette.items import Gazette
 from gazette.spiders.base import BaseGazetteSpider
 
 
 class AlMaceioSpider(BaseGazetteSpider):
-    MUNICIPALITY_ID = "2704302"
+    TERRITORY_ID = "2704302"
+
     name = "al_maceio"
     allowed_domains = ["maceio.al.gov.br"]
     start_urls = ["http://www.maceio.al.gov.br/noticias/diario-oficial/"]
-    page_number = 1
 
     def parse(self, response):
-        gazettes = list(response.xpath("//article"))
+        gazettes = response.xpath("//article")
         for gazette in gazettes:
-            url = gazette.xpath("a/@href").extract_first()
-
+            url = gazette.xpath("a/@href").get()
             if not url:  # In some cases the href attr is empty, e.g. 24-11-2015
                 continue
 
-            date_str = gazette.xpath("time/text()").extract_first()
-            date = parse(date_str, languages=["pt"])
-            title = gazette.xpath("a/@title").extract_first()
-            is_extra_edition = "suplemento" in (title.lower())
+            gazette_date = gazette.xpath("time/text()").get()
+            date = parse(gazette_date, languages=["pt"]).date()
+
+            title = gazette.xpath("a/@title").get()
+            is_extra_edition = "suplemento" in title.lower()
 
             if "wp-content/uploads" in url:
                 gazette = self.create_gazette(date, url, is_extra_edition)
                 yield gazette
             else:
-                request = scrapy.Request(url, self.parse_additional_page)
-                request.meta["date"] = date
-                request.meta["is_extra_edition"] = is_extra_edition
-                yield request
+                yield scrapy.Request(
+                    url,
+                    callback=self.parse_additional_page,
+                    meta={"date": date, "is_extra_edition": is_extra_edition,},
+                )
 
-        """
-        This condition is necessary to stop crawling when there are no more gazettes
-        """
-        if gazettes:
-            self.page_number += 1
-            yield scrapy.Request(
-                "{0}/page/{1}".format(self.start_urls[0], str(self.page_number))
-            )
+        next_pages = response.css(".envolve-content nav a::attr(href)").getall()
+        for next_page_url in next_pages:
+            yield scrapy.Request(next_page_url)
 
     def parse_additional_page(self, response):
-        url = response.xpath('//p[@class="attachment"]/a/@href').extract_first()
+        url = response.css("p.attachment a::attr(href)").get()
         gazette = self.create_gazette(
             response.meta["date"], url, response.meta["is_extra_edition"]
         )
@@ -57,7 +53,7 @@ class AlMaceioSpider(BaseGazetteSpider):
             date=date,
             file_urls=[url],
             is_extra_edition=is_extra_edition,
-            municipality_id=self.MUNICIPALITY_ID,
+            territory_id=self.TERRITORY_ID,
             power="executive_legislature",
             scraped_at=datetime.utcnow(),
         )

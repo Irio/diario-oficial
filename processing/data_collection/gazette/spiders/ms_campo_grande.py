@@ -1,47 +1,48 @@
-# -*- coding: utf-8 -*-
-from dateparser import parse
-import datetime as dt
+import datetime
 
 import scrapy
+from dateutil.rrule import MONTHLY, rrule
 
 from gazette.items import Gazette
+from gazette.spiders.base import BaseGazetteSpider
 
 
-class MsCampoGrandeSpider(scrapy.Spider):
-    MUNICIPALITY_ID = "5002704"
+class MsCampoGrandeSpider(BaseGazetteSpider):
+    TERRITORY_ID = "5002704"
     name = "ms_campo_grande"
     allowed_domains = ["portal.capital.ms.gov.br"]
+    start_date = datetime.date(1998, 1, 9)  # First gazette available
 
     def start_requests(self):
-        today = dt.date.today()
-        next_year = today.year + 1
-        for year in range(2015, next_year):
-            for month in range(1, 13):
-                if year == today.year and month > today.month:
-                    return
+        periods_of_interest = [
+            (str(date.year), str(date.month).zfill(2))
+            for date in rrule(
+                freq=MONTHLY, dtstart=self.start_date, until=datetime.date.today()
+            )
+        ]
+        for year, month in periods_of_interest:
+            yield scrapy.FormRequest(
+                "http://portal.capital.ms.gov.br/diogrande/diarioOficial",
+                formdata={"mes": month, "ano": year,},
+                cb_kwargs={"month": month, "year": year},
+            )
 
-                yield scrapy.FormRequest(
-                    url="http://portal.capital.ms.gov.br/diogrande/diarioOficial",
-                    method="POST",
-                    formdata={"mes": str(month), "ano": str(year)},
-                )
+    def parse(self, response, month, year):
+        gazettes = response.css(".arquivos li")
+        for gazette in gazettes:
+            day = gazette.css(".day strong::text").get()
+            gazette_date = datetime.datetime.strptime(
+                f"{year}-{month}-{day}", "%Y-%m-%d"
+            ).date()
 
-    def parse(self, response):
-        year = response.css("#leftToRight > h3").extract_first().split("/")[1]
-        docs = response.css(".arquivos li")
-        for doc in docs:
-            url = doc.css(".inner-detail a::attr(href)").extract_first()
-            day = doc.css(".day strong::text").extract_first()
-            month = doc.css(".month::text").extract_first()
-            date = parse(f"{day}/{month}/{year}", languages=["pt"]).date()
-            doc_title = doc.css(".inner-detail::text").extract_first().lower()
-            is_extra_edition = "extra" in doc_title or "suplemento" in doc_title
-            power = "executive_legislature"
+            gazette_url = gazette.css("a::attr(href)").get()
+            is_extra_edition = bool(gazette.css("p::text").re(r"Extra|Suplemento"))
+
             yield Gazette(
-                date=date,
-                file_urls=[url],
+                date=gazette_date,
+                file_urls=[gazette_url],
                 is_extra_edition=is_extra_edition,
-                municipality_id=self.MUNICIPALITY_ID,
-                power=power,
-                scraped_at=dt.datetime.utcnow(),
+                territory_id=self.TERRITORY_ID,
+                power="executive_legislature",
+                scraped_at=datetime.datetime.utcnow(),
             )

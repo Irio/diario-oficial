@@ -12,7 +12,7 @@ from gazette.spiders.base import BaseGazetteSpider
 
 
 class BaSalvadorSpider(BaseGazetteSpider):
-    MUNICIPALITY_ID = "2927408"
+    TERRITORY_ID = "2927408"
     name = "ba_salvador"
     allowed_domains = ["salvador.ba.gov.br"]
     power = "executive"
@@ -67,7 +67,7 @@ class BaSalvadorSpider(BaseGazetteSpider):
         yield Gazette(
             date=parsed_date.date(),
             file_urls=[pdf_url],
-            municipality_id=self.MUNICIPALITY_ID,
+            territory_id=self.TERRITORY_ID,
             power=self.power,
             scraped_at=datetime.datetime.utcnow(),
         )

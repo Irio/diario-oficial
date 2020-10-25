@@ -1,0 +1,12 @@
+black==19.10b0
+boto3
+dateparser
+fake-useragent
+itemadapter
+psycopg2-binary
+python-dateutil
+python-decouple
+python-magic
+requests
+scrapy
+SQLAlchemy

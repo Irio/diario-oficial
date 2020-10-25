@@ -1,21 +1,114 @@
-# -*- coding: utf-8 -*-
+import json
 import re
-from datetime import datetime
+from datetime import date, datetime
 
 import dateparser
+from dateutil.rrule import DAILY, rrule
+from fake_useragent import UserAgent
 import scrapy
-
 from gazette.items import Gazette
+from scrapy.exceptions import NotConfigured
 
 
 class BaseGazetteSpider(scrapy.Spider):
     def __init__(self, start_date=None, *args, **kwargs):
         super(BaseGazetteSpider, self).__init__(*args, **kwargs)
 
+        if not hasattr(self, "TERRITORY_ID"):
+            raise NotConfigured("Please set a value for `TERRITORY_ID`")
+
         if start_date is not None:
-            parsed_data = dateparser.parse(start_date)
-            if parsed_data is not None:
-                self.start_date = parsed_data.date()
+            try:
+                self.start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+                self.logger.info(f"Collecting gazettes after {self.start_date}")
+            except ValueError:
+                self.logger.exception(
+                    f"Unable to parse {start_date}. Use %Y-%m-d date format."
+                )
+                raise
+        else:
+            self.logger.info("Collecting all gazettes available")
+
+
+class SigpubGazetteSpider(BaseGazetteSpider):
+    """www.diariomunicipal.com.br (Sigpub) base spider
+
+    Documents obtained by this kind of spider are text-PDFs with many cities in it.
+    That's because the websites are usually made for associations of cities.
+    
+    TODO:
+        - All variations have a "possible" start date of 01/01/2009, but that may cause
+        many unnecessary requests to be made if they actually start making available
+        documents later. Some investigation for the start date of each website needs to
+        be made in this case.
+
+    Observations:
+        - These websites have an "Advanced Search", but they are protected by ReCaptcha.
+    """
+
+    custom_settings = {"USER_AGENT": UserAgent().random}
+    start_date = date(2009, 1, 1)
+
+    def start_requests(self):
+        """Requests start page where the calendar widget is available."""
+        yield scrapy.Request(self.CALENDAR_URL, callback=self.parse_calendar)
+
+    def parse_calendar(self, response):
+        """Makes requests for each date to see if a document is available."""
+        default_form_fields = {
+            "calendar[_token]": response.xpath(
+                "//input[@id='calendar__token']/@value"
+            ).get()
+        }
+        for date, date_form_fields in self.available_dates_form_fields():
+            formdata = {**default_form_fields, **date_form_fields}
+
+            yield scrapy.FormRequest(
+                url=response.urljoin("materia/calendario"),
+                formdata=formdata,
+                meta={"date": date, "edition_type": "regular"},
+                callback=self.parse_gazette_info,
+            )
+            yield scrapy.FormRequest(
+                url=response.urljoin("materia/calendario/extra"),
+                formdata=formdata,
+                meta={"date": date, "edition_type": "extra"},
+                callback=self.parse_gazette_info,
+            )
+
+    def parse_gazette_info(self, response):
+        """Parses document availability endpoint and gets document URL if available."""
+        body = json.loads(response.text)
+        meta = response.meta
+
+        if "error" in body:
+            self.logger.debug(
+                f"{meta['edition_type'].capitalize()} Gazette not available for {meta['date'].date()}"
+            )
+            return
+
+        for edition in body["edicao"]:
+            url = f"{body['url_arquivos']}{edition['link_diario']}.pdf"
+            yield Gazette(
+                date=meta["date"].date(),
+                file_urls=[url],
+                territory_id=self.TERRITORY_ID,
+                power="executive_legislative",
+                is_extra_edition=(meta["edition_type"] == "extra"),
+                scraped_at=datetime.utcnow(),
+                edition_number=edition.get("numero_edicao", ""),
+            )
+
+    def available_dates_form_fields(self):
+        """Generates dates and corresponding form fields for availability endpoint."""
+        available_dates = rrule(freq=DAILY, dtstart=self.start_date, until=date.today())
+        for query_date in available_dates:
+            form_fields = {
+                "calendar[day]": str(query_date.day),
+                "calendar[month]": str(query_date.month),
+                "calendar[year]": str(query_date.year),
+            }
+            yield query_date, form_fields
 
 
 class FecamGazetteSpider(BaseGazetteSpider):

@@ -8,6 +8,16 @@ The goal of this project is to upgrade **Diário Oficial** to the digital age, c
 
 When this project was initially released, had two distinct goals: creating crawlers for governments gazettes and parsing bidding exemptions from them. Now going forward, it is limited to the first objective.
 
+Table of Contents
+=================
+  * [Build and Run](#build-and-run)
+     * [Run Gazette Crawler](#run-gazette-crawler)
+  * [Tips and tricks](#tips-and-tricks)
+  * [Troubleshooting](#troubleshooting)
+     * ["Permission denied" error when files are downloaded](#permission-denied-error-when-files-are-downloaded)
+  * [Contributing](#contributing)
+  * [Acknowledgments](#acknowledgments)
+
 ## Build and Run
 
 If you want to understand how Diário Oficial works, you'll want to get the source, build it, and run it locally.
@@ -29,6 +39,13 @@ The following example is the command to run the gazette crawler for Florianópol
 
 ```console
 $ docker-compose run --rm processing bash -c "cd data_collection && scrapy crawl sc_florianopolis"
+```
+
+You can limit the gazettes you want to download passing `start_date` as argument with `YYYY-MM-DD` format. The
+following command will download only gazettes which date is greater than 01/Sep/2020:
+
+```console
+$ docker-compose run --rm processing bash -c "cd data_collection && scrapy crawl sc_florianopolis -a start_date=2020-09-01"
 ```
 
 ## Tips and tricks

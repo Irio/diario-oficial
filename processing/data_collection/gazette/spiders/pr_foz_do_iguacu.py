@@ -37,9 +37,7 @@ class PrFozDoIguacuSpider(BaseGazetteSpider):
                 date=date,
                 file_urls=[f"{self.BASE_URL}{url}"],
                 is_extra_edition=is_extra_edition,
-                territory_id=self.TERRITORY_ID,
                 power="executive_legislature",
-                scraped_at=dt.datetime.utcnow(),
             )
 
     @staticmethod

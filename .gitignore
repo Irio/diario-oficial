@@ -1,4 +1,5 @@
-/data/full/
+/data/*
+!/data/territories.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -123,3 +124,9 @@ Sessionx.vim
 *~
 tags
 [._]*.un~
+
+# Vscode
+.vscode
+
+# SQLite database
+querido-diario.db

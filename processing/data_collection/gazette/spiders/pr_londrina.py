@@ -1,5 +1,3 @@
-import datetime as dt
-
 from dateparser import parse
 from scrapy import FormRequest
 
@@ -33,9 +31,7 @@ class PrLondrina(BaseGazetteSpider):
                 date=date,
                 file_urls=[url],
                 is_extra_edition=is_extra,
-                territory_id=self.TERRITORY_ID,
                 power="executive_legislature",
-                scraped_at=dt.datetime.utcnow(),
             )
 
         for page in range(2, len(response.css(".button.othersOptPage")) + 1):

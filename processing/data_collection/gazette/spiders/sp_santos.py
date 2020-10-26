@@ -25,9 +25,7 @@ class SpSantosSpider(BaseGazetteSpider):
                     date=parsing_date,
                     file_urls=[url],
                     is_extra_edition=False,
-                    territory_id=self.TERRITORY_ID,
                     power="executive_legislature",
-                    scraped_at=dt.datetime.utcnow(),
                 )
 
             parsing_date = parsing_date - dt.timedelta(days=1)

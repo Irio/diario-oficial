@@ -1,5 +1,3 @@
-import datetime as dt
-
 import scrapy
 import w3lib.url
 from dateparser import parse
@@ -33,10 +31,5 @@ class RrBoaVistaSpider(BaseGazetteSpider):
 
             power = "executive_legislature"
             yield Gazette(
-                date=date,
-                file_urls=[url],
-                is_extra_edition=False,
-                territory_id=self.TERRITORY_ID,
-                power=power,
-                scraped_at=dt.datetime.utcnow(),
+                date=date, file_urls=[url], is_extra_edition=False, power=power,
             )

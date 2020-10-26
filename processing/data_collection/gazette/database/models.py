@@ -43,6 +43,7 @@ class Gazette(DeclarativeBase):
     created_at = Column(DateTime, default=dt.datetime.utcnow)
     territory = relationship("Territory", back_populates="gazettes")
     territory_id = Column(String, ForeignKey("territories.id"))
+    processed = Column(Boolean, default=False)
     __table_args__ = (UniqueConstraint("territory_id", "date", "file_checksum"),)
 
 

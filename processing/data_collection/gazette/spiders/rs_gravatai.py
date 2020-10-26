@@ -1,5 +1,4 @@
 from dateparser import parse
-from datetime import datetime
 
 from scrapy import Request
 
@@ -34,7 +33,7 @@ class RsGravataiSpider(BaseGazetteSpider):
         """
         @url https://gravatai.atende.net/?pg=diariooficial&pagina=1
         @returns items 1
-        @scrapes date file_urls is_extra_edition territory_id power scraped_at
+        @scrapes date file_urls is_extra_edition power
         """
 
         for element in response.css(".nova_listagem > .linha"):
@@ -58,7 +57,5 @@ class RsGravataiSpider(BaseGazetteSpider):
                 date=date,
                 file_urls=[url],
                 is_extra_edition=is_extra_edition,
-                territory_id=self.TERRITORY_ID,
                 power="executive",
-                scraped_at=datetime.utcnow(),
             )

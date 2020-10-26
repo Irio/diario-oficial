@@ -1,4 +1,3 @@
-from datetime import datetime
 import re
 
 import dateparser
@@ -23,7 +22,7 @@ class RjCampoGoytacazesSpider(BaseGazetteSpider):
         @url https://www.campos.rj.gov.br/diario-oficial.php?PGpagina=1&PGporPagina=15
         @returns requests 1
         @returns items 15 15
-        @scrapes date file_urls is_extra_edition municipality_id power scraped_at
+        @scrapes date file_urls is_extra_edition power
         """
 
         for element in response.css("ul.ul-licitacoes li"):
@@ -52,9 +51,7 @@ class RjCampoGoytacazesSpider(BaseGazetteSpider):
                 date=date,
                 file_urls=[path_to_gazette],
                 is_extra_edition=is_extra_edition,
-                territory_id=self.TERRITORY_ID,
                 power="executive",
-                scraped_at=datetime.utcnow(),
             )
 
         next_url = (

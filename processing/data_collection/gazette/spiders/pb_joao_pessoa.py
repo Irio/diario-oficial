@@ -1,7 +1,4 @@
-from datetime import datetime
-
 import dateparser
-
 from gazette.items import Gazette
 from gazette.spiders.base import BaseGazetteSpider
 
@@ -40,9 +37,7 @@ class PbJoaoPessoaSpider(BaseGazetteSpider):
                 date=date,
                 file_urls=[url],
                 is_extra_edition=is_extra,
-                territory_id=self.TERRITORY_ID,
                 power="executive_legislature",
-                scraped_at=datetime.utcnow(),
             )
 
         for url in response.css(self.NEXT_PAGE_CSS).extract():

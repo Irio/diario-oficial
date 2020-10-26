@@ -2,7 +2,6 @@ import datetime
 
 import scrapy
 from dateutil.rrule import DAILY, rrule
-
 from gazette.items import Gazette
 from gazette.spiders.base import BaseGazetteSpider
 
@@ -39,7 +38,5 @@ class RjRioDeJaneiroSpider(BaseGazetteSpider):
                 date=gazette_date,
                 file_urls=[gazette_url],
                 is_extra_edition=is_extra_edition,
-                territory_id=self.TERRITORY_ID,
                 power="executive",
-                scraped_at=datetime.datetime.utcnow(),
             )

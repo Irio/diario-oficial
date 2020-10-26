@@ -1,4 +1,3 @@
-from datetime import datetime
 import re
 
 import dateparser
@@ -78,7 +77,5 @@ class DfBrasiliaSpider(BaseGazetteSpider):
             date=date,
             file_urls=file_urls,
             is_extra_edition=is_extra_edition,
-            territory_id=self.TERRITORY_ID,
-            scraped_at=datetime.utcnow(),
             power="executive_legislative",
         )

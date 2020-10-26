@@ -35,7 +35,7 @@ class SigpubGazetteSpider(BaseGazetteSpider):
 
     Documents obtained by this kind of spider are text-PDFs with many cities in it.
     That's because the websites are usually made for associations of cities.
-    
+
     TODO:
         - All variations have a "possible" start date of 01/01/2009, but that may cause
         many unnecessary requests to be made if they actually start making available
@@ -92,10 +92,8 @@ class SigpubGazetteSpider(BaseGazetteSpider):
             yield Gazette(
                 date=meta["date"].date(),
                 file_urls=[url],
-                territory_id=self.TERRITORY_ID,
                 power="executive_legislative",
                 is_extra_edition=(meta["edition_type"] == "extra"),
-                scraped_at=datetime.utcnow(),
                 edition_number=edition.get("numero_edicao", ""),
             )
 
@@ -187,6 +185,4 @@ class FecamGazetteSpider(BaseGazetteSpider):
         return Gazette(
             date=dateparser.parse(document[1], languages=("pt",)).date(),
             file_urls=(document[0],),
-            territory_id=self.TERRITORY_ID,
-            scraped_at=datetime.utcnow(),
         )

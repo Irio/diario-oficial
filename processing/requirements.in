@@ -1,12 +1,14 @@
 black==19.10b0
 boto3
+chompjs==1.0.16
 dateparser
 fake-useragent
 itemadapter
 psycopg2-binary
 python-dateutil
 python-decouple
-python-magic
 requests
 scrapy
+schematics
 SQLAlchemy
+spidermon

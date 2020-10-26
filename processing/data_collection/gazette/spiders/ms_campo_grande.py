@@ -42,7 +42,5 @@ class MsCampoGrandeSpider(BaseGazetteSpider):
                 date=gazette_date,
                 file_urls=[gazette_url],
                 is_extra_edition=is_extra_edition,
-                territory_id=self.TERRITORY_ID,
                 power="executive_legislature",
-                scraped_at=datetime.datetime.utcnow(),
             )

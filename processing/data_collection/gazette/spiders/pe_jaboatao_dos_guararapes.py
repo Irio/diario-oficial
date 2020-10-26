@@ -22,7 +22,7 @@ class PeJaboataoDosGuararapesSpider(BaseGazetteSpider):
                     "date": parse(
                         gazette_card.css(".elementor-post-date::text").get(),
                         languages=["pt"],
-                    ),
+                    ).date(),
                 },
             )
 

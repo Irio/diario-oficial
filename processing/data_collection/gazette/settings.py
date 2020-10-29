@@ -9,9 +9,8 @@ ITEM_PIPELINES = {
     "spidermon.contrib.scrapy.pipelines.ItemValidationPipeline": 400,
     "gazette.pipelines.SQLDatabasePipeline": 500,
 }
-
+QUERIDODIARIO_EXTRACT_TEXT_FROM_FILE = True
 FILES_STORE = "/mnt/data/"
-
 EXTENSIONS = {
     "spidermon.contrib.scrapy.extensions.Spidermon": 500,
 }

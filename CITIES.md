@@ -2273,6 +2273,7 @@ The municipality id (IBGE code) can be found on [Wikipedia](https://pt.wikipedia
 | 2263 | Xexéu - PE | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/195) |
 | 2264 | Xinguara - PA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/195) |
 | 2265 | Presidente Prudente | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/233) |
+| 2266 | Macaíba (RN) | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/259) |
 | XXX | Foz do Iguaçu | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/27) |
 | XXX | Araguaina | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/3) |
 | XXX | Jaú | || [PR](https://github.com/okfn-brasil/diario-oficial/pull/197)|

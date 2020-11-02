@@ -12,7 +12,10 @@ from gazette.items import Gazette
 
 
 class BaseGazetteSpider(scrapy.Spider):
-    def __init__(self, start_date=None, *args, **kwargs):
+    start_date: date
+    end_date: date
+
+    def __init__(self, start_date=None, end_date=None, *args, **kwargs):
         super(BaseGazetteSpider, self).__init__(*args, **kwargs)
 
         if not hasattr(self, "TERRITORY_ID"):
@@ -27,8 +30,16 @@ class BaseGazetteSpider(scrapy.Spider):
                     f"Unable to parse {start_date}. Use %Y-%m-d date format."
                 )
                 raise
-        else:
-            self.logger.info("Collecting all gazettes available")
+
+        if end_date is not None:
+            try:
+                self.end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+                self.logger.info(f"Collecting gazettes until {self.end_date}")
+            except ValueError:
+                self.logger.exception(
+                    f"Unable to parse {end_date}. Use %Y-%m-d date format."
+                )
+                raise
 
 
 class SigpubGazetteSpider(BaseGazetteSpider):

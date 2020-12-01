@@ -2278,3 +2278,24 @@ The municipality id (IBGE code) can be found on [Wikipedia](https://pt.wikipedia
 | XXX | Jaú | || [PR](https://github.com/okfn-brasil/diario-oficial/pull/197)|
 | XXX | Itu | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/303) |
 | XXX | Acajutiba - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/330) |
+| XXX | Amélia Rodrigues - BA | :white_check_mark: | [issue](https://github.com/okfn-brasil/querido-diario/issues/299) | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | Serrinha - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | Conceição do Almeida - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | Gentio do Ouro - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | Gongogi - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | Governador Mangabeira - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | Itaquara - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | Jaguarari - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | Muniz Ferreira - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | Paratinga - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | Pé de Serra - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | São Felipe - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | São Félix - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | São Francisco do Conde - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | São Miguel das Matas - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | Sapeaçu - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | Saúde - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | Serrinha - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | Vera Cruz - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | Wenceslau Guimarães - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |
+| XXX | Xique-Xique - BA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/354) |

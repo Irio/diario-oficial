@@ -1,0 +1,67 @@
+# Cities Coverage
+
+Current coverage of territories with already implemented spiders.
+
+If a spider is implemented for a territory it doesn't mean the whole of publication
+systems for that territory is fully covered. In other words, a city can publish in many
+different systems along their online publication timespan, and for the whole coverage
+we should have spiders implemented for each one. Because of that, the
+[census](https://censo.ok.org.br/) exists to analyze the whole of publication systems
+for each brazilian territory. You can contribute there yourself or use it as a source
+if you want to build a spider here and the census has already mapped the publication
+systems for the territory you are interested.
+
+> Note: spiders still in development may be found in this project's *issues* and/or
+*pull requests*.
+
+## Milestones
+
+### Cover all capitals
+<details>
+  <summary>Click to expand</summary>
+
+  | IBGE code | City name  | State | Implemented spiders |
+  | :-------: | :--------  | :---- | :------------------ |
+  {%- for territory in territories|selectattr("is_capital_bool")|sort(attribute="normalized_name") %}
+  {{ "| {} | {} | {} |".format(territory['id'], territory["name"], territory["state_code"]) }}
+  {%- set comma = joiner(",") %}
+  {%- for spider in territory["spiders"]|sort(attribute="name") %}
+  {{- comma() }} {{ "[{}]({})".format(spider['name'], spider['path']) }}
+  {%- endfor %} |
+  {%- endfor %}
+</details>
+
+### Cover all territories with population above 100k
+<details>
+  <summary>Click to expand</summary>
+
+  | IBGE code | City name  | State | Population | Implemented spiders |
+  | :-------: | :--------  | :---- | :--------- | :------------------ |
+  {%- for territory in territories|selectattr("is_population_above_100k")|sort(attribute="population_ibge_2020", reverse=True) %}
+  {{ "| {} | {} | {} | {} |".format(territory['id'], territory["name"], territory["state_code"], territory["population_ibge_2020"]) }}
+  {%- set comma = joiner(",") %}
+  {%- for spider in territory["spiders"]|sort(attribute="name") %}
+  {{- comma() }} {{ "[{}]({})".format(spider['name'], spider['path']) }}
+  {%- endfor %} |
+  {%- endfor %}
+</details>
+
+## All Territories
+{% for normalized_statename, state_territories in territories_by_state|dictsort %}
+
+### {{ state_territories[0]["state"] }}
+
+<details>
+  <summary>Click to expand</summary>
+
+  | IBGE code | City name | Implemented spiders |
+  | :-------: | :-------- | :------------------ |
+  {%- for territory in state_territories|sort(attribute="normalized_name") %}
+  {{ "| {} | {} |".format(territory['id'], territory["name"]) }}
+  {%- set comma = joiner(",") %}
+  {%- for spider in territory["spiders"]|sort(attribute="name") %}
+  {{- comma() }} {{ "[{}]({})".format(spider['name'], spider['path']) }}
+  {%- endfor %} |
+  {%- endfor %}
+</details>
+{% endfor -%}

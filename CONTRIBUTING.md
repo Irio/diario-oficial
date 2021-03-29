@@ -2,9 +2,18 @@
 
 *Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project, you agree to abide by its terms.*
 
-Since Diário Oficial seeks to become a trustful source of official governmental announcements, every data source must also be trustful. A private company publishing government gazettes without official permission, for instance, is not a trustful source.
 
-At this moment, the project aims for the 100 top Brazilian municipalities by population, collecting all the gazettes since 2015. If you want to help us reach this goal, we're tracking the progress of crawlers in [CITIES.md](CITIES.md) file. Have a look at it if you want to know where contributors are already working.
+At this moment, the project's coverage (cities with implemented spiders) milestones are:
+
+- All capital cities;
+- All the cities with a population above a hundred thousand people (according to IBGE's 2020 estimations).
+
+If you want to help us reach these goals, we're tracking the progress of implemented spiders in the [COVERAGE file](COVERAGE.md). However, if you want to submit a spider outside of these milestones we would be glad to have it too!
+
+> Note: the project's scope is on the *executive branch*, other branches may become part of the scope in the future, but are not the focus right now.
+
+> Note: since Querido Diário seeks to become a trustful source of official governmental announcements, every data source must also be trustful. A private company publishing government gazettes without official permission, for instance, is not a trustful source.
+
 
 ## Starting to contribute
 

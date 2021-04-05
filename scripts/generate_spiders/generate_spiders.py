@@ -9,7 +9,7 @@ from jinja2 import Environment, FileSystemLoader
 
 def load_template(spider_data):
     env = Environment(loader=FileSystemLoader("."))
-    template = env.get_template("spider_template.py")
+    template = env.get_template("spider_template.jinja")
     return template.render(
         spider_class_base=spider_data["spider_class_base"],
         spider_class_name=spider_data["spider_class_name"],
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser("Generate a spider structure from CSV.")
     parser.add_argument("file")
     args = parser.parse_args()
-    project_root = dirname(dirname(abspath(__file__)))
+    project_root = dirname(dirname(dirname(abspath(__file__))))
 
     with open(args.file) as csv_file:
         reader = csv.DictReader(csv_file)

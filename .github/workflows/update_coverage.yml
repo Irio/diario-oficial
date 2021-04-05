@@ -1,0 +1,29 @@
+name: Update COVERAGE after merge
+on:
+  push:
+    branches: [main]
+jobs:
+  update-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('data_collection/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install dependencies
+        run: pip install -r data_collection/requirements.txt
+      - name: Update COVERAGE.md
+        run: |
+          python scripts/update_coverage/update_coverage.py
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add COVERAGE.md
+          git commit -m "Update COVERAGE.md" || echo "Nothing to update."
+          git push

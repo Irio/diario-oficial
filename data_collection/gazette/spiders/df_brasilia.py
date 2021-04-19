@@ -1,6 +1,7 @@
+import datetime
 import re
 
-import dateparser
+from dateparser import parse
 from scrapy import Request
 
 from gazette.items import Gazette
@@ -10,23 +11,18 @@ from gazette.spiders.base import BaseGazetteSpider
 class DfBrasiliaSpider(BaseGazetteSpider):
     TERRITORY_ID = "5300108"
     name = "df_brasilia"
+    start_date = datetime.date(1967, 12, 25)
 
     GAZETTE_URL = "http://dodf.df.gov.br/listar"
     DATE_REGEX = r"[0-9]{2}-[0-9]{2}[ -][0-9]{2,4}"
     EXTRA_EDITION_TEXT = "EDICAO EXTR"
-    PDF_URL = "http://dodf.df.gov.br/index/visualizar-arquivo/?pasta={}&arquivo={}"
+    PDF_URL = "https://dodf.df.gov.br/index/visualizar-arquivo/?pasta={}&arquivo={}"
 
     def start_requests(self):
         """Requests page that has a list of all available years."""
-        yield Request(self.GAZETTE_URL, callback=self.parse_year_list)
-
-    def parse_year_list(self, response):
-        """Parses available years to request list of available months for each year."""
-        years_available = response.css(
-            "#local-arquivos .arquivo::attr(data-file)"
-        ).getall()
-
-        for year in years_available:
+        initial_year = self.start_date.year
+        end_year = datetime.date.today().year
+        for year in range(initial_year, end_year + 1):
             yield Request(
                 f"{self.GAZETTE_URL}?dir={year}",
                 meta={"year": year},
@@ -51,13 +47,18 @@ class DfBrasiliaSpider(BaseGazetteSpider):
         dates = response.json().get("data", [])
 
         for gazette_name in dates.values():
+            date = re.search(self.DATE_REGEX, gazette_name).group()
+            date = parse(date, settings={"DATE_ORDER": "DMY"}).date()
+
+            if date < self.start_date:
+                continue
+
             url = f"{self.GAZETTE_URL}?dir={year}/{month}/{gazette_name}"
             yield Request(url, callback=self.parse_gazette)
 
     def parse_gazette(self, response):
         """Parses list of documents to request each one for the date."""
         json_response = response.json()
-
         if not json_response:
             self.logger.warning(f"Document not found in {response.url}")
             return
@@ -65,7 +66,7 @@ class DfBrasiliaSpider(BaseGazetteSpider):
         json_dir = json_response["dir"]
 
         date = re.search(self.DATE_REGEX, json_dir).group()
-        date = dateparser.parse(date, settings={"DATE_ORDER": "DMY"})
+        date = parse(date, settings={"DATE_ORDER": "DMY"}).date()
         is_extra_edition = self.EXTRA_EDITION_TEXT in json_dir
         path = json_dir.replace("/", "|")
 

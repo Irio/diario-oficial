@@ -97,7 +97,7 @@ The municipality id (IBGE code) can be found on [Wikipedia](https://pt.wikipedia
 | 87 | São José dos Pinhais | :white_check_mark: | | | PR [59](https://github.com/okfn-brasil/diario-oficial/pull/59) [325](https://github.com/okfn-brasil/querido-diario/pull/325) |
 | 88 | Limeira | :soon: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/113) |
 | 89 | Petrópolis | | | |
-| 90 | Camaçari | | | |
+| 90 | Camaçari | :white_check_mark: | [issue](https://github.com/okfn-brasil/diario-oficial/issues/293) | [PR](https://github.com/okfn-brasil/diario-oficial/pull/295) |
 | 91 | Santarém | | | |
 | 92 | Mossoró | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/259) |
 | 93 | Suzano | | | |

@@ -58,7 +58,7 @@ The municipality id (IBGE code) can be found on [Wikipedia](https://pt.wikipedia
 | 48 | Caxias do Sul | :white_check_mark: | | |
 | 49 | Macapá | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/254) |
 | 50 | Mauá | | | |
-| 51 | São João de Meriti | | | |
+| 51 | São João de Meriti | | [issue](https://github.com/okfn-brasil/querido-diario/issues/370) | |
 | 52 | São José do Rio Preto | | | |
 | 53 | Santos | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/14) |
 | 54 | Mogi das Cruzes | | | |

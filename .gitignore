@@ -104,6 +104,9 @@ ENV/
 # pycharm
 .idea/
 
+#vscode
+.vscode/
+
 # dolphin
 .directory
 

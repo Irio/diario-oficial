@@ -14,7 +14,7 @@ ITEM_PIPELINES = {
 
 DOWNLOAD_TIMEOUT = 360
 
-FILES_STORE = "data"
+FILES_STORE = "s3://queridodiariobucket/"
 MEDIA_ALLOW_REDIRECTS = True
 
 EXTENSIONS = {
@@ -35,14 +35,14 @@ SPIDERMON_TELEGRAM_FAKE = True
 SPIDERMON_TELEGRAM_SENDER_TOKEN = "<TELEGRAM_BOT_TOKEN>"
 SPIDERMON_TELEGRAM_RECIPIENTS = ["<RECIPIENT>"]
 
-QUERIDODIARIO_DATABASE_URL = "sqlite:///querido-diario.db"
+QUERIDODIARIO_DATABASE_URL = "postgresql://queridodiario:queridodiario@localhost/queridodiariodb"
 QUERIDODIARIO_MAX_REQUESTS_ITEMS_RATIO = 5
 QUERIDODIARIO_MAX_DAYS_WITHOUT_GAZETTES = 5
 
 # These settings are needed only when storing downloaded files
 # in a S3 bucket
-AWS_ACCESS_KEY_ID = ""
-AWS_SECRET_ACCESS_KEY = ""
-AWS_ENDPOINT_URL = ""
-AWS_REGION_NAME = ""
+AWS_ACCESS_KEY_ID = "minio-access-key"
+AWS_SECRET_ACCESS_KEY = "minio-secret-key"
+AWS_ENDPOINT_URL = "http://127.0.0.1:9000"
+AWS_REGION_NAME = "us-east-1"
 FILES_STORE_S3_ACL = "public-read"

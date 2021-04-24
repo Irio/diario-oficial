@@ -1,0 +1,13 @@
+# syntax=docker/dockerfile:1
+
+FROM python:3.8
+
+WORKDIR /mnt/code
+ENV PYTHONPATH=/mnt/code
+
+COPY data_collection/requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+
+COPY data_collection/ /mnt/code/data_collection
+
+ENTRYPOINT [ "python3" ]

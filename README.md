@@ -42,7 +42,7 @@ On a Windows computer, you can use the code above. You just need to substitute `
 ### Run inside a container
 
 You can run inside a container using [podman](https://podman.io/getting-started/).
-Before get inside this container you need start environment as explainedZ
+Before get inside this container you need start environment as explained
 [setup instructions](https://github.com/okfn-brasil/querido-diario-data-processing#setup).
 
 After that, get inside de container:

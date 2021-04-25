@@ -2,6 +2,11 @@ ISORT_ARGS := --combine-star --combine-as --order-by-type --thirdparty scrapy --
 
 SRC_DIRS := ./data_collection
 
+IMAGE_NAMESPACE ?= serenata
+IMAGE_NAME ?= querido-diario
+IMAGE_TAG ?= latest
+POD_NAME ?= run-querido-diario-data-extraction
+
 check:
 	python3 -m isort --check --diff $(ISORT_ARGS) $(SRC_DIRS)
 	python3 -m black --check $(SRC_DIRS)
@@ -25,3 +30,14 @@ shell:
 
 run_spider_since:
 	cd $(SRC_DIRS) && scrapy crawl -a start_date=$(START_DATE) $(SPIDER)
+
+shell_build:
+	podman build --tag $(IMAGE_NAMESPACE)/$(IMAGE_NAME):$(IMAGE_TAG) -f ./Dockerfile-shell
+
+shell_run: shell_build
+	cp --no-clobber contrib/sample.env .env
+	podman run --rm -ti \
+	    --volume $(PWD)/data_collection:/mnt/code/data_collection:ro \
+		--pod $(POD_NAME) \
+		--env-file .env \
+		--user=$(UID):$(UID) $(IMAGE_NAMESPACE)/$(IMAGE_NAME):$(IMAGE_TAG)

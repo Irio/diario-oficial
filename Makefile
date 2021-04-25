@@ -35,8 +35,9 @@ shell_build:
 	podman build --tag $(IMAGE_NAMESPACE)/$(IMAGE_NAME):$(IMAGE_TAG) -f ./Dockerfile-shell
 
 shell_run: shell_build
+	cp --no-clobber contrib/sample.env .env
 	podman run --rm -ti \
 	    --volume $(PWD)/data_collection:/mnt/code/data_collection:ro \
 		--pod $(POD_NAME) \
-		--env-file scripts/container.env \
+		--env-file .env \
 		--user=$(UID):$(UID) $(IMAGE_NAMESPACE)/$(IMAGE_NAME):$(IMAGE_TAG)

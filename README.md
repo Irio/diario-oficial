@@ -37,18 +37,20 @@ $ pip install -r data_collection/requirements.txt
 $ pre-commit install
 ```
 
+On a Windows computer, you can use the code above. You just need to substitute ```source .venv/bin/activate ``` for ```.venv/Scripts/activate.bat```. The rest is the same as in Linux.
+
 ### Run inside a container
 
 You can run inside a container using [podman](https://podman.io/getting-started/).
-Before get inside this container you need start environment as
-[querido-diario-data-processing documentation](https://github.com/okfn-brasil/querido-diario-data-processing).
+Before get inside this container you need start environment as explainedZ
+[setup instructions](https://github.com/okfn-brasil/querido-diario-data-processing#setup).
 
 After that, get inside de container:
 ```console
-$ make shell-run
+$ make shell_run
 ```
 
-On a Windows computer, you can use the code above. You just need to substitute ```source .venv/bin/activate ``` for ```.venv/Scripts/activate.bat```. The rest is the same as in Linux.
+Now you can follow below instructions for populate data
 
 ### Run Gazette Crawler
 

@@ -31,12 +31,12 @@ shell:
 run_spider_since:
 	cd $(SRC_DIRS) && scrapy crawl -a start_date=$(START_DATE) $(SPIDER)
 
-shell-build:
+shell_build:
 	podman build --tag $(IMAGE_NAMESPACE)/$(IMAGE_NAME):$(IMAGE_TAG) -f ./Dockerfile-shell
 
-shell-run: shell-build
+shell_run: shell_build
 	podman run --rm -ti \
 	    --volume $(PWD)/data_collection:/mnt/code/data_collection:ro \
 		--pod $(POD_NAME) \
 		--env-file scripts/container.env \
-		--user=$(UID):$(UID) $(IMAGE_NAMESPACE)/$(IMAGE_NAME):$(IMAGE_TAG) bash
+		--user=$(UID):$(UID) $(IMAGE_NAMESPACE)/$(IMAGE_NAME):$(IMAGE_TAG)

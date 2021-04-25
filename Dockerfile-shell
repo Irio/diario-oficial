@@ -10,4 +10,4 @@ RUN pip3 install -r requirements.txt
 
 COPY data_collection/ /mnt/code/data_collection
 
-ENTRYPOINT [ "python3" ]
+ENTRYPOINT [ "bash" ]

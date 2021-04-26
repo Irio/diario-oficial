@@ -22,23 +22,23 @@ The municipality id (IBGE code) can be found on [Wikipedia](https://pt.wikipedia
 | 12 | Belém | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/212) |
 | 13 | Guarulhos | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/4) |
 | 14 | Campinas | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/2) |
-| 15 | São Luís | :soon: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/22) |
-| 16 | São Gonçalo | | | |
+| 15 | São Luís - MA | :soon: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/22) |
+| 16 | São Gonçalo - RJ | :soon: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/418) |
 | 17 | Maceió | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/32) |
-| 18 | Duque de Caxias | | | |
+| 18 | Duque de Caxias | | :soon: | [PR](https://github.com/okfn-brasil/querido-diario/pull/102) |
 | 19 | Natal | :white_check_mark: | [issue](https://github.com/okfn-brasil/diario-oficial/issues/189) | [PR](https://github.com/okfn-brasil/diario-oficial/pull/192) |
 | 20 | Campo Grande | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/35) |
 | 21 | Teresina | :white_check_mark: | [issue](https://github.com/okfn-brasil/diario-oficial/issues/188)| [PR](https://github.com/okfn-brasil/diario-oficial/pull/216) |
-| 22 | São Bernardo do Campo | | | |
+| 22 | São Bernardo do Campo | :soon: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/412) |
 | 23 | João Pessoa | :white_check_mark: | | | [PR](https://github.com/okfn-brasil/querido-diario/pull/72), [PR](https://github.com/okfn-brasil/querido-diario/pull/270) |
 | 24 | Nova Iguaçu | :white_check_mark: | | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/120) |
-| 25 | Santo André | | | |
+| 25 | Santo André | | :soon: | [PR](https://github.com/okfn-brasil/querido-diario/pull/286) |
 | 26 | São José dos Campos | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/71) |
-| 27 | Osasco | :soon: | | |
+| 27 | Osasco | :soon: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/75) |
 | 28 | Jaboatão dos Guararapes | | | |
-| 29 | Ribeirão Preto | | [issue](https://github.com/okfn-brasil/diario-oficial/issues/31) | |
+| 29 | Ribeirão Preto | | [issue](https://github.com/okfn-brasil/diario-oficial/issues/31) | [PR](https://github.com/okfn-brasil/querido-diario/pull/67) |
 | 30 | Uberlândia | :soon: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/37) |
-| 31 | Sorocaba | | | |
+| 31 | Sorocaba | :soon:  | | [PR](https://github.com/okfn-brasil/querido-diario/pull/372) |
 | 32 | Contagem | :white_check_mark: | | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/77) |
 | 33 | Aracaju | | | |
 | 34 | Feira de Santana | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/25) |
@@ -51,15 +51,15 @@ The municipality id (IBGE code) can be found on [Wikipedia](https://pt.wikipedia
 | 41 | Ananindeua | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/297) |
 | 42 | Serra | :white_check_mark: | | |
 | 43 | Niterói | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/373) |
-| 44 | Belford Roxo | | | |
+| 44 | Belford Roxo | | :soon: | [PR](https://github.com/okfn-brasil/querido-diario/pull/308) |
 | 45 | Campos dos Goytacazes | :white_check_mark: | | | https://github.com/okfn-brasil/diario-oficial/pull/70 |
 | 46 | Vila Velha | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/318) |
 | 47 | Florianópolis | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/17) |
 | 48 | Caxias do Sul | :white_check_mark: | | |
 | 49 | Macapá | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/254) |
 | 50 | Mauá | | | |
-| 51 | São João de Meriti | | | |
-| 52 | São José do Rio Preto | | | |
+| 51 | São João de Meriti | :soon: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/376) |
+| 52 | São José do Rio Preto | :soon: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/385) |
 | 53 | Santos | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/14) |
 | 54 | Mogi das Cruzes | | | |
 | 55 | Betim |:white_check_mark:| | [PR](https://github.com/okfn-brasil/querido-diario/pull/417) |
@@ -93,11 +93,11 @@ The municipality id (IBGE code) can be found on [Wikipedia](https://pt.wikipedia
 | 83 | Cascavel | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/92) |
 | 84 | Guarujá | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/96) |
 | 85 | Praia Grande | | | |
-| 86 | Taubaté | | | |
+| 86 | Taubaté | :soon:  | | |
 | 87 | São José dos Pinhais | :white_check_mark: | | | PR [59](https://github.com/okfn-brasil/diario-oficial/pull/59) [325](https://github.com/okfn-brasil/querido-diario/pull/325) |
 | 88 | Limeira | :soon: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/113) |
-| 89 | Petrópolis | | | |
-| 90 | Camaçari | | | |
+| 89 | Petrópolis | | :soon: | [PR](https://github.com/okfn-brasil/querido-diario/pull/282) |
+| 90 | Camaçari | | :soon: | [PR](https://github.com/okfn-brasil/querido-diario/pull/295) |
 | 91 | Santarém | | | |
 | 92 | Mossoró | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/259) |
 | 93 | Suzano | | | |
@@ -2273,6 +2273,16 @@ The municipality id (IBGE code) can be found on [Wikipedia](https://pt.wikipedia
 | 2263 | Xexéu - PE | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/195) |
 | 2264 | Xinguara - PA | :white_check_mark: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/195) |
 | 2265 | Presidente Prudente | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/233) |
+| 2266 | Sobral - CE | :soon: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/435) |
+| 2267 | Paulínia - SP | :soon: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/423) |
+| 2268 | Carapicuiba - SP | :soon: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/406) |
+| 2269 | Guaratinguetá - SP | :soon: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/403) |
+| 2270 | Juazeiro do Norte - CE | :soon: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/358) |
+| 2271 | Guarapuava - PR | :soon: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/340) |
+| 2272 | Bento Gonçalves - RS | :soon: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/329) |
+| 2273 | Macaiba - RN | :soon: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/265) |
+| 2274 | Macapa - AP | :soon: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/217) |
+| 2275 | Valinhos - SP | :soon: | | [PR](https://github.com/okfn-brasil/querido-diario/pull/210) |
 | XXX | Foz do Iguaçu | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/27) |
 | XXX | Araguaina | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/3) |
 | XXX | Jaú | || [PR](https://github.com/okfn-brasil/diario-oficial/pull/197)|

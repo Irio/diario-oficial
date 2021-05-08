@@ -71,7 +71,7 @@ The municipality id (IBGE code) can be found on [Wikipedia](https://pt.wikipedia
 | 61 | Piracicaba | :white_check_mark: | [issue](https://github.com/okfn-brasil/diario-oficial/issues/294) | [PR](https://github.com/okfn-brasil/querido-diario/pull/312) |
 | 62 | Carapicuíba | | | |
 | 63 | Olinda | | | |
-| 64 | Cariacica | :white_check_mark: | | |
+| 64 | Cariacica | :white_check_mark: | [PR](https://github.com/okfn-brasil/querido-diario/pull/448)| |
 | 65 | Rio Branco | | | |
 | 66 | Anápolis | | | |
 | 67 | Bauru | :white_check_mark: | | [PR](https://github.com/okfn-brasil/diario-oficial/pull/196) |
